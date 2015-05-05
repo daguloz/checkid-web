@@ -16,11 +16,11 @@ class App_model extends CI_Model {
         public function getField($type, $value) {
             
             // Si no se solicita un campo especifico devuelve false
-            if (!in_array($type, ['id', 'tag', 'nombre', 'tipo']))
+            if (!in_array($type, ['id', 'tag', 'name', 'type']))
                 return false;
 
             // Construye la sentencia SQL y la ejecuta
-            $this->db->select('id, tag, nombre, tipo');
+            $this->db->select('id, tag, name, type');
             $this->db->where($type, $value);
             $query = $this->db->get('users');
             

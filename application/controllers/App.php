@@ -52,7 +52,7 @@ class App extends CI_Controller {
 			$this->load->model('app_model');
 			
 			echo '<pre>';
-			print_r($this->app_model->getField('tag', $tag));
+			echo json_encode($this->app_model->getField('tag', $tag));
 		}
 		
 	}
