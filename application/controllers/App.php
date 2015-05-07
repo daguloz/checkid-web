@@ -50,7 +50,7 @@ class App extends CI_Controller {
 
 		if ($id && $tag) {
 			$this->load->model('app_model');
-			$result = $this->app_model->getField('tag', $tag));
+			$result = $this->app_model->getField('tag', $tag);
 			$response = [];
 			$response['status'] = 'OK';
 			$response['result'] = $result;
