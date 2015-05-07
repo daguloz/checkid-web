@@ -50,9 +50,12 @@ class App extends CI_Controller {
 
 		if ($id && $tag) {
 			$this->load->model('app_model');
-			
+			$result = $this->app_model->getField('tag', $tag));
+			$response = [];
+			$response['status'] = 'OK';
+			$response['result'] = $result;
 			echo '<pre>';
-			echo json_encode($this->app_model->getField('tag', $tag));
+			echo json_encode($response);
 		}
 		
 	}
