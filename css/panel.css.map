@@ -1,6 +1,6 @@
 {
 "version": 3,
-"mappings": "AAAA,OAAO;EACH,UAAU,EAAE,IAAI",
+"mappings": "AAAA,UAAU,CACT,MAAM,CAAE,cAAc,CACtB,aAAa,CAAE,GAAG,CACnB,OAAO,CACN,UAAU,CAAE,IAAI",
 "sources": ["panel.sass"],
 "names": [],
 "file": "panel.css"

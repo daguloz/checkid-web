@@ -27,7 +27,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 									
 						<div class="row">
 							<div class="col-xs-offset-1 col-xs-10 col-sm-offset-2 col-sm-8 col-md-offset-4 col-md-4">
-								<?php if (isset($error)) echo '<div class="alert alert-danger" role="alert">' . $error . '</div>'; ?>
+								<?php if (isset($error)) echo '<div class="alert alert-danger" data-dismiss="alert" role="alert">' . $error . '</div>'; ?>
 								<form method="POST" action="login">
 									<div class="form-group">
 										<label for="email">Email</label>
@@ -52,7 +52,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 			<div class="row">
 				<div class="col-xs-12 text-center spacer">
-					<p><small>Página renderizada en <strong>{elapsed_time}</strong> segundos.</small></p>
+					<!-- <p><small>Página renderizada en <strong>{elapsed_time}</strong> segundos.</small></p> -->
 				</div>
 			</div>
 		</div>

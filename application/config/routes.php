@@ -51,9 +51,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 */
 $route['default_controller'] = 'panel';
 $route['panel'] = 'panel/index';
-$route['usuarios'] = 'panel/users';
+$route['usuarios']['get'] = 'panel/users/get';
+$route['usuarios']['post'] = 'panel/users/post';
+$route['dispositivos']['get'] = 'panel/devices/get';
+$route['dispositivos']['post'] = 'panel/devices/post';
+$route['registros'] = 'panel/readings';
+$route['configuracion'] = 'panel/settings';
 $route['panel'] = 'panel/index';
 $route['login']['post'] = 'panel/login';
+$route['logout'] = 'panel/logout';
 $route['get/device'] = 'app/deviceGet';
 $route['post/device'] = 'app/devicePost';
 $route['get/device/(:any)'] = 'app/deviceGet/$1';

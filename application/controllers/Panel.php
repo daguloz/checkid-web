@@ -19,40 +19,150 @@ class Panel extends CI_Controller {
 	 * @see http://codeigniter.com/user_guide/general/urls.html
 	 */
 	 
+	private $viewData;
+
 	public function __construct()
 	{
 		parent::__construct();
 		
 		$this->load->library('session');	
 
-		if (ENVIRONMENT === 'development')
-			$this->output->enable_profiler(TRUE);
+		if (ENVIRONMENT === 'development') {
+			//$this->output->enable_profiler(TRUE);
+		}
+
+		// Secciones
+		$this->viewData['sections'] = [
+			'dashboard' =>['url' => 'panel', 'desc' => 'Dashboard'],
+			'devices' => ['url' => 'dispositivos', 'desc' => 'Dispositivos'],
+			'readings' => ['url' => 'registros', 'desc' => 'Registros'],
+			'users' => ['url' => 'usuarios', 'desc' => 'Usuarios'],
+			'settings' => ['url' => 'configuracion', 'desc' => 'Configuración'],
+			'logout' => ['url' => 'logout', 'desc' => 'Cerrar sesión']
+		];
 	}
 	
 	public function index()
 	{
-		if (!$this->session->logged_in) {
-			$this->load->view('panel/login');
-		}
-		else {
-			$data['section'] = 'dashboard';
-			$this->load->view('panel/layout_header', $data);
-			$this->load->view('panel/home');
-			$this->load->view('panel/layout_footer');
-		}
+		$this->loadSection('dashboard');
 	}
 
-	public function users()
+	public function devices($method)
 	{
+		$this->load->model('app_model');
+
+		if ($method === 'post') {
+
+			$formType = $this->input->post('form-type'); 
+			$type = $this->input->post($formType . '-type'); 
+			$tag = $this->input->post($formType . '-tag');
+			$user = $this->input->post($formType . '-user');
+			$description = $this->input->post($formType . '-description');
+			
+			if ($formType === 'device-add') {
+				if ($res = $this->app_model->insertDevice($type, $tag, $user, $description))
+					$this->viewData['info'] = 'Dispositivo <strong>' . $tag . '</strong> añadido.';
+				else
+					$this->viewData['error'] = 'Ocurrió un error al añadir el dispositivo <strong>' . $tag . '</strong>';
+
+			} else if ($formType === 'device-edit') {
+				$id = $this->input->post('device-edit-id');
+
+				if ($this->app_model->updateDevice($id, $type, $tag, $user, $description))
+					$this->viewData['info'] = 'Dispositivo <strong>' . $tag . '</strong> modificado.';
+				else
+					$this->viewData['error'] = 'Ocurrió un error al modificar los datos del dispositivo <strong>' . $tag . '</strong>';
+
+			} else if ($formType === 'device-remove') {
+				$id = $this->input->post('device-remove-id');
+
+				if ($this->app_model->removeDevice($id))
+					$this->viewData['info'] = 'Dispositivo <strong>' . $tag . '</strong> eliminado.';
+				else
+					$this->viewData['error'] = 'Ocurrió un error al eliminar el dispositivo <strong>' . $tag . '</strong>';
+			}
+
+		}
+
+		$this->viewData['devices'] = $this->app_model->getDevices(10);
+		$this->viewData['deviceCount'] = $this->app_model->getDeviceCount();
+		$this->viewData['users'] = $this->app_model->getUsers();
+
+		$this->loadSection('devices');
+	}
+
+	private function loadSection($section)
+	{
+
 		if (!$this->session->logged_in) {
 			$this->load->view('panel/login');
-		}
-		else {
-			$data['section'] = 'users';
-			$this->load->view('panel/layout_header', $data);
-			$this->load->view('panel/users');
+		} else {
+			$this->viewData['section'] = $section;
+			$this->load->view('panel/layout_header', $this->viewData);
+			$this->load->view('panel/' . $section);
 			$this->load->view('panel/layout_footer');
 		}
+
+	}
+	public function readings()
+	{
+		$this->load->model('app_model');
+
+		$this->viewData['readings'] = $this->app_model->getReadings(10);
+		$this->viewData['readingsCount'] = $this->app_model->getReadingsCount();
+
+		$this->loadSection('readings');
+	}
+
+
+	public function settings()
+	{
+		$this->loadSection('settings');
+	}
+
+	public function users($method)
+	{
+		$this->load->model('app_model');
+
+		if ($method === 'post') {
+
+			$formType = $this->input->post('form-type'); 
+			$type = $this->input->post($formType . '-type'); 
+			$name = $this->input->post($formType . '-name');
+			$email = $this->input->post($formType . '-email');
+			$password = $this->input->post($formType . '-password');
+			
+			if (($password !== null) && ($password != ""))
+				$password = password_hash($password, PASSWORD_DEFAULT);
+
+			if ($formType === 'user-add') {
+				if ($res = $this->app_model->insertUser($type, $name, $email, $password))
+					$this->viewData['info'] = 'Usuario <strong>' . $name . '</strong> añadido.';
+				else
+					$this->viewData['error'] = 'Ocurrió un error al añadir el usuario <strong>' . $name . '</strong>';
+
+			} else if ($formType === 'user-edit') {
+				$id = $this->input->post('user-edit-id');
+
+				if ($this->app_model->updateUser($id, $type, $name, $email, $password))
+					$this->viewData['info'] = 'Usuario <strong>' . $name . '</strong> modificado.';
+				else
+					$this->viewData['error'] = 'Ocurrió un error al modificar los datos del usuario <strong>' . $name . '</strong>';
+
+			} else if ($formType === 'user-remove') {
+				$id = $this->input->post('user-remove-id');
+
+				//if ($this->app_model->removeUser($id))
+					//$this->viewData['info'] = 'Usuario <strong>' . $name . '</strong> eliminado.';
+				//else
+					$this->viewData['error'] = 'Ocurrió un error al eliminar el usuario <strong>' . $name . '</strong>';
+			}
+		}
+
+		$this->viewData['users'] = $this->app_model->getUsers();
+		$this->viewData['userCount'] = $this->app_model->getUserCount();
+
+		$this->loadSection('users');
 	}
 	
 
@@ -67,8 +177,8 @@ class Panel extends CI_Controller {
 			$user = $this->user_model->getUser('email', $email);
 
 			if ($user !== NULL) {
-				//if ($password === $user->password) {
-				if (true) { // Login automatico mientras se añade la gestion de contraseñas.
+				if (password_verify($password, $user->password)) {
+				//if (true) { // Login automatico mientras se añade la gestion de contraseñas.
 					
 					// Guarda los datos del usuario en la sesión
 					$this->session->logged_in = true;
@@ -97,6 +207,12 @@ class Panel extends CI_Controller {
 			$tplData['error']  = 'Rellena todos los campos.';
 			$this->load->view('panel/login', $tplData);
 		}
+	}
+
+	public function logout()
+	{
+		$this->session->sess_destroy();
+		$this->load->view('panel/login');
 	}
 
 }

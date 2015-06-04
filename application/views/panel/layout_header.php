@@ -10,6 +10,7 @@
 
 		<!-- CSS -->
 		<link rel="stylesheet" href="css/bootstrap.min.css">
+		<link rel="stylesheet" href="css/chosen.min.css">
 		<link rel="stylesheet" href="css/panel.css">
 
 		<!--[if lt IE 9]>
@@ -21,18 +22,30 @@
 
 		<div class="container">
 			<div class="row">
+				<div class="col-xs-12">
+					<div class="page-header">
+					<h1>CheckID - Panel de control</h1>
+					</div>
+				</div>
 				<div class="col-xs-12 col-sm-4 col-md-3 col-lg-2 spacer">
 					<ul class="nav nav-pills nav-stacked">
-						<li role="presentation"<?php if ($section === 'dashboard') echo ' class="active"'?>><a href="panel">Panel CheckID</a></li>
-						<li role="presentation"<?php if ($section === 'devices') echo ' class="active"'?>><a href="dispositivos">Dispositivos</a></li>
-						<li role="presentation"<?php if ($section === 'readings') echo ' class="active"'?>><a href="registros">Registros</a></li>
-						<li role="presentation"<?php if ($section === 'users') echo ' class="active"'?>><a href="usuarios">Usuarios</a></li>
-						<li role="presentation"<?php if ($section === 'config') echo ' class="active"'?>><a href="configuracion">Configuración</a></li>
+						<?php
+						foreach ($sections as $sName => $sData) {
+							echo '<li role="presentation"';
+							if ($section === $sName)
+								echo ' class="active"';
+							echo '><a href="' . $sData['url'] . '">';
+							echo $sData['desc'];
+							if ($section === $sName)
+								echo '<span class="pull-right glyphicon glyphicon-chevron-right"></span>';
+							echo '</a></li>';
+						}
+						?>
 					</ul>
 					<div class="row">
 						<div class="col-xs-12 text-center spacer">
-							<p><small>Página renderizada en <strong>{elapsed_time}</strong> segundos.</small></p>
+							<!-- <p><small>Página renderizada en <strong>{elapsed_time}</strong> segundos.</small></p> -->
 						</div>
 					</div>
 				</div>
-				<div class="col-xs-12 col-sm-8 col-md-9 col-lg-10 spacer">
+				<div class="col-xs-12 col-sm-8 col-md-9 col-lg-10">
